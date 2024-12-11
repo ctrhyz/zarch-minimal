@@ -1,0 +1,67 @@
+#!/bin/bash
+echo "THIS SCRIPT ONLY SUPPORTED ON UEFI"
+echo "To start this script, you must have wifi in your device."
+while true; do
+read -p "Do you have wifi installed? [y/n] " hwifi
+case $hwifi in
+    [yY] ) break;;
+    [nN] ) echo "Then this script is not for you, Bye!";
+            echo;
+            sleep 2;
+            exit;;
+    * ) echo "Invalid response. Only 'y/n' are accepted";
+            echo;;
+esac
+done
+echo "Wifi scan . . ."
+iwctl station wlan0 scan
+read -p "Enter wifi SSID to connect : " ssid
+iwctl station wlan0 connect $ssid
+timedatectl
+echo
+timedatectl set-timezone Asia/Jakarta
+timedatectl
+echo
+echo "You must already have a partition to install Linux, at least 30GB."
+echo "If you don't have one, you can set it up in 'Windows' or use 'fdisk' (see google for the setup)"
+while true; do
+read -p "Have you set it up? [y/n] " setiup
+case $setiup in
+    [yY] ) break;;
+    [nN] ) echo "Then you must set it first, Bye!";
+            echo;
+            sleep 2;
+            exit;;
+    * ) echo "Invalid response. Only 'y/n' are accepted";
+            echo;;
+esac
+done
+fdisk -l
+echo
+echo "Which partition you want to install AchLinux?"
+echo "THIS WILL FORMAT THE PARTITION YOU INPUT, INPUT CORRECTLY"
+read -p "Input your partition for 'ArchLinux' e.g. /dev/sda2 : " root_partition
+mkfs.ext4 $root_partition
+echo
+fdisk -l
+echo
+echo "Swap is optional"
+echo "But like before, if you want activate swap, you must already have partition for it first."
+echo "IF YOU SELECT YES, YOU WILL BE ASKED TO ENTER A PARTITION. THIS WILL FORMAT THAT PARTITION."
+echo "CHOOSE WISELY!!"
+while true; do
+read -p "Do you want activate swap? [y/n] " activateswap
+case $activateswap in
+    [yY] ) echo "THIS WILL FORMAT THE PARTITION YOU INPUT, INPUT CORRECTLY";
+            read -p "Input your partition for 'swap' e.g. /dev/sda3 : " swap_partition
+            mkswap $swap_partition;
+            break;;
+    [nN] ) echo "Swap will not be created";
+            echo;
+            sleep 2;
+            break;;
+    * ) echo "Invalid response. Only 'y/n' are accepted";
+            echo;;
+esac
+done
+echo $activateswap
