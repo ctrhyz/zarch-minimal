@@ -86,7 +86,7 @@ esac
 done
 mount $root_partition /mnt
 mount --mkdir $boot_partition /mnt/boot
-if [ "$swaptive" == true]; then
+if [ "$swaptive" == true ]; then
     swapon $swap_partition
 fi
 pacstrap -K /mnt base linux linux-firmware git grub ntfs-3g efibootmgr os-prober nano intel-ucode networkmanager base-devel man-db man-pages texinfo
