@@ -89,7 +89,7 @@ mount --mkdir $boot_partition /mnt/boot
 if [ "$swaptive" == true ]; then
     swapon $swap_partition
 fi
-pacstrap -K /mnt base linux linux-firmware git grub ntfs-3g efibootmgr os-prober nano intel-ucode networkmanager base-devel man-db man-pages texinfo
+pacstrap -K /mnt base linux linux-firmware git grub ntfs-3g bash-completion efibootmgr os-prober nano intel-ucode networkmanager base-devel man-db man-pages texinfo
 genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
 ln -sf /usr/share/zoneinfo/$jones /etc/localtime
@@ -105,4 +105,16 @@ passwd
 grub-install --target=x86_64-efi --efi-directory=$boot_partition --bootloader-id=ArchLinux
 echo GRUB_DISABLE_OS_PROBER=false >> /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
+echo "Input your username, this required for login after installation"
+read -p "Input your username : " uername
+useradd -m $uername
+usermod -aG wheel $uername
+groups $uername
+echo "Enter your password for new user"
+passwd $uername
+echo "%wheel      ALL=(ALL:ALL) ALL" >> /etc/sudoers
+systemctl enable NetworkManager
 echo "INSTALLATION DONE, YOU MUST REBOOT NOW"
+echo "use command 'reboot' to reboot"
+sleep 2
+exit
