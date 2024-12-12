@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "THIS SCRIPT ONLY SUPPORTED ON UEFI"
+echo "THIS SCRIPT ONLY SUPPORTED ON UEFI & INTEL PROCESSOR"
 echo "To start this script, you must have wifi in your device."
 while true; do
 read -p "Do you have wifi installed? [y/n] " hwifi
@@ -18,8 +18,11 @@ iwctl station wlan0 scan
 read -p "Enter wifi SSID to connect : " ssid
 iwctl station wlan0 connect $ssid
 timedatectl
-echo
-timedatectl set-timezone Asia/Jakarta
+echo "Set your timezone, here the list of timezone. press 'q' to quit from the list"
+sleep 4
+timedatectl list-timezones
+read -p "Input your timezone. it SensitiveCase e.g. Asia/Jakarta : " jones
+timedatectl set-timezone $jones
 timedatectl
 echo
 echo "You must already have a partition to install Linux, at least 30GB."
@@ -55,13 +58,51 @@ case $activateswap in
     [yY] ) echo "THIS WILL FORMAT THE PARTITION YOU INPUT, INPUT CORRECTLY";
             read -p "Input your partition for 'swap' e.g. /dev/sda3 : " swap_partition
             mkswap $swap_partition;
+            swaptive=true;
             break;;
     [nN] ) echo "Swap will not be created";
             echo;
             sleep 2;
+            swaptive=false;
             break;;
     * ) echo "Invalid response. Only 'y/n' are accepted";
             echo;;
 esac
 done
-echo $activateswap
+echo "If you dual booted or still didn't format your entire disk, then the 'boot' partition should still be there"
+echo "If you don't have one, you can set it up in 'Windows' or use 'fdisk' (see google for the setup)"
+while true; do
+read -p "Do you have 'boot' partition? [y/n] " setiup2
+case $setiup2 in
+    [yY] ) read -p "Input your partition for 'boot' e.g. /dev/sda1 : " boot_partition;
+            break;;
+    [nN] ) echo "Then you must set it first, Bye!";
+            echo;
+            sleep 2;
+            exit;;
+    * ) echo "Invalid response. Only 'y/n' are accepted";
+            echo;;
+esac
+done
+mount $root_partition /mnt
+mount --mkdir $boot_partition /mnt/boot
+if [ "$swaptive" == true]; then
+    swapon $swap_partition
+fi
+pacstrap -K /mnt base linux linux-firmware git grub ntfs-3g efibootmgr os-prober nano intel-ucode networkmanager base-devel man-db man-pages texinfo
+genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt
+ln -sf /usr/share/zoneinfo/$jones /etc/localtime
+hwclock --systohc
+echo en_US.UTF-8 UTF-8 >> /etc/locale.gen
+locale-gen
+echo LANG=en_US.UTF-8 >> /etc/locale.conf
+read -p "Set your hostname : " honame
+echo $honame >> /etc/hostname
+mkinitcpio -P
+echo "Set your password for 'root'"
+passwd
+grub-install --target=x86_64-efi --efi-directory=$boot_partition --bootloader-id=ArchLinux
+echo GRUB_DISABLE_OS_PROBER=false >> /etc/default/grub
+grub-mkconfig -o /boot/grub/grub.cfg
+echo "INSTALLATION DONE, YOU MUST REBOOT NOW"
