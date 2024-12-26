@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/bash
+echo ""
 echo "THIS SCRIPT ONLY SUPPORTED ON UEFI & INTEL PROCESSOR"
 echo "To start this script, you must have wifi in your device."
 while true; do
@@ -18,11 +19,7 @@ iwctl station wlan0 scan
 read -p "Enter wifi SSID to connect : " ssid
 iwctl station wlan0 connect $ssid
 timedatectl
-echo "Set your timezone, here the list of timezone. press 'q' to quit from the list"
-sleep 4
-timedatectl list-timezones
-read -p "Input your timezone. it SensitiveCase e.g. Asia/Jakarta : " jones
-timedatectl set-timezone $jones
+timedatectl set-timezone Asia/Jakarta
 timedatectl
 echo
 echo "You must already have a partition to install Linux, at least 30GB."
@@ -91,29 +88,7 @@ if [ "$swaptive" == true ]; then
 fi
 pacstrap -K /mnt base linux linux-firmware git grub ntfs-3g bash-completion efibootmgr os-prober nano intel-ucode networkmanager base-devel man-db man-pages texinfo
 genfstab -U /mnt >> /mnt/etc/fstab
-arch-chroot /mnt
-ln -sf /usr/share/zoneinfo/$jones /etc/localtime
-hwclock --systohc
-echo en_US.UTF-8 UTF-8 >> /etc/locale.gen
-locale-gen
-echo LANG=en_US.UTF-8 >> /etc/locale.conf
-read -p "Set your hostname : " honame
-echo $honame >> /etc/hostname
-mkinitcpio -P
-echo "Set your password for 'root'"
-passwd
-grub-install --target=x86_64-efi --efi-directory=$boot_partition --bootloader-id=ArchLinux
-echo GRUB_DISABLE_OS_PROBER=false >> /etc/default/grub
-grub-mkconfig -o /boot/grub/grub.cfg
-echo "Input your username, this required for login after installation"
-read -p "Input your username : " uername
-useradd -m $uername
-usermod -aG wheel $uername
-groups $uername
-echo "Enter your password for new user"
-passwd $uername
-echo "%wheel      ALL=(ALL:ALL) ALL" >> /etc/sudoers
-systemctl enable NetworkManager
+arch-chroot /mnt ./zchroot
 echo "INSTALLATION DONE, YOU MUST REBOOT NOW"
 echo "use command 'reboot' to reboot"
 sleep 2

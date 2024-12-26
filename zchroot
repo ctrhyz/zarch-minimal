@@ -1,0 +1,24 @@
+#!/bin/bash
+ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+hwclock --systohc
+echo en_US.UTF-8 UTF-8 >> /etc/locale.gen
+locale-gen
+echo LANG=en_US.UTF-8 >> /etc/locale.conf
+read -p "Set your hostname : " honame
+echo $honame >> /etc/hostname
+mkinitcpio -P
+echo "Set your password for 'root'"
+passwd
+grub-install --target=x86_64-efi --efi-directory=$boot_partition --bootloader-id=ArchLinux
+echo GRUB_DISABLE_OS_PROBER=false >> /etc/default/grub
+grub-mkconfig -o /boot/grub/grub.cfg
+echo "Input your username, this required for login after installation"
+read -p "Input your username : " uername
+useradd -m $uername
+usermod -aG wheel $uername
+groups $uername
+echo "Enter your password for new user"
+passwd $uername
+echo "%wheel      ALL=(ALL:ALL) ALL" >> /etc/sudoers
+systemctl enable NetworkManager
+exit
