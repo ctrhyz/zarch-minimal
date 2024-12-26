@@ -88,6 +88,7 @@ if [ "$swaptive" == true ]; then
 fi
 pacstrap -K /mnt base linux linux-firmware git grub ntfs-3g bash-completion efibootmgr os-prober nano intel-ucode networkmanager base-devel man-db man-pages texinfo
 genfstab -U /mnt >> /mnt/etc/fstab
+cp ./zchroot /mnt
 arch-chroot /mnt ./zchroot
 echo "INSTALLATION DONE, YOU MUST REBOOT NOW"
 echo "use command 'reboot' to reboot"
