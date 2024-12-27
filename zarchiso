@@ -54,22 +54,6 @@ case $activateswap in
 esac
 done
 echo "============================================================================================================================"
-echo "If you dual booted or still didn't format your entire disk, then the 'boot' partition should still be there"
-echo "If you don't have one, you can set it up in 'Windows' or use 'fdisk' (see google for the setup)"
-while true; do
-read -p "Do you have 'boot' partition? [y/n] " setiup2
-case $setiup2 in
-    [yY] ) read -p "Input your partition for 'boot' e.g. /dev/sda1 : " boot_partition;
-            break;;
-    [nN] ) echo "Then you must set it first, Bye!";
-            echo;
-            sleep 2;
-            exit;;
-    * ) echo "Invalid response. Only 'y/n' are accepted";
-            echo;;
-esac
-done
-echo "============================================================================================================================"
 mount $root_partition /mnt
 echo "Mount Root Partition to /mnt - DONE"
 echo "============================================================================================================================"
@@ -85,13 +69,10 @@ pacstrap -K /mnt base linux linux-firmware git grub ntfs-3g bash-completion efib
 echo "============================================================================================================================"
 genfstab -U /mnt >> /mnt/etc/fstab
 echo "============================================================================================================================"
-cp ./zchroot /mnt
-echo "Copy 'zchroot' to /mnt"
+chmod +x /root/zarch-minimal/*
+cp /root/zarch-minimal/zchroot /mnt
 echo "============================================================================================================================"
-arch-chroot /mnt bash ./zchroot
-echo "============================================================================================================================"
-echo "INSTALLATION DONE, YOU MUST REBOOT NOW"
-echo "use command 'reboot' to reboot"
-echo "============================================================================================================================"
+echo "Now, you need to run this 'zchroot' file."
+echo "RUN THIS COMMAND : arch-chroot /mnt ./zchroot"
 sleep 2
 exit
