@@ -1,6 +1,4 @@
 #!/bin/bash
-echo "ParallelDownloads = 5" >> /etc/pacman.conf
-pacman -Syyu
 timedatectl
 echo "============================================================================================================================"
 timedatectl set-timezone Asia/Jakarta
