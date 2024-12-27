@@ -5,5 +5,8 @@ makepkg -si
 cd ~
 rm -rf yay
 yay
-yay -S informant
+yay -S informant pacman-contrib mlocate archlinux-contrib jq ancient-packages rebuild-detector paccache-hook reflector xfce4 xfce4-goodies sddm
 sudo usermod -aG informant $USER
+sudo systemctl enable paccache.timer
+sudo systemctl start paccache.timer
+sudo systemctl enable sddm
