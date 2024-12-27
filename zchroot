@@ -1,8 +1,4 @@
 #!/bin/bash
-fdisk -l
-echo "============================================================================================================================"
-read -p "Input your partition for 'boot' e.g. /dev/sda1 : " boot_partition;
-sleep 1
 echo "============================================================================================================================"
 ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 hwclock --systohc
@@ -25,7 +21,7 @@ echo "Set your password for 'root'"
 passwd
 sleep 1
 echo "============================================================================================================================"
-grub-install --target=x86_64-efi --efi-directory=$boot_partition --bootloader-id=ArchLinux
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ArchLinux
 echo GRUB_DISABLE_OS_PROBER=false >> /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 sleep 1
