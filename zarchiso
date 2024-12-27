@@ -59,7 +59,7 @@ if [ "$swaptive" == true ]; then
 fi
 sleep 1
 echo "============================================================================================================================"
-pacstrap -K /mnt base linux linux-firmware git grub ntfs-3g bash-completion efibootmgr os-prober nano intel-ucode networkmanager base-devel man-db man-pages texinfo
+pacstrap -K /mnt btop htop neofetch base linux linux-firmware git grub ntfs-3g bash-completion efibootmgr os-prober nano intel-ucode networkmanager base-devel man-db man-pages texinfo
 sleep 1
 echo "============================================================================================================================"
 genfstab -U /mnt >> /mnt/etc/fstab
