@@ -1,40 +1,27 @@
 #!/bin/bash
 timedatectl
+sleep 1
 echo "============================================================================================================================"
 timedatectl set-timezone Asia/Jakarta
 echo "Time set to Asia/Jakarta"
+sleep 1
 echo "============================================================================================================================"
 timedatectl
-echo "============================================================================================================================"
-echo "You must already have a partition to install Linux, at least 30GB."
-echo "If you don't have one, you can set it up in 'Windows' or use 'fdisk' (see google for the setup)"
-while true; do
-read -p "Have you set it up? [y/n] " setiup
-case $setiup in
-    [yY] ) break;;
-    [nN] ) echo "Then you must set it first, Bye!";
-            echo;
-            sleep 2;
-            exit;;
-    * ) echo "Invalid response. Only 'y/n' are accepted";
-            echo;;
-esac
-done
+sleep 1
 echo "============================================================================================================================"
 fdisk -l
+sleep 1
 echo "============================================================================================================================"
 echo "Which partition you want to install AchLinux?"
 echo "THIS WILL FORMAT THE PARTITION YOU INPUT, INPUT CORRECTLY"
 read -p "Input your partition for 'ArchLinux' e.g. /dev/sda2 : " root_partition
-echo "============================================================================================================================"
 mkfs.ext4 $root_partition
+sleep 1
 echo "============================================================================================================================"
 fdisk -l
+sleep 1
 echo "============================================================================================================================"
 echo "Swap is optional"
-echo "But like before, if you want activate swap, you must already have partition for it first."
-echo "IF YOU SELECT YES, YOU WILL BE ASKED TO ENTER A PARTITION. THIS WILL FORMAT THAT PARTITION."
-echo "CHOOSE WISELY!!"
 while true; do
 read -p "Do you want activate swap? [y/n] " activateswap
 echo "============================================================================================================================"
@@ -53,24 +40,36 @@ case $activateswap in
             echo;;
 esac
 done
+sleep 1
 echo "============================================================================================================================"
 mount $root_partition /mnt
 echo "Mount Root Partition to /mnt - DONE"
+sleep 1
 echo "============================================================================================================================"
+fdisk -l
+echo "============================================================================================================================"
+read -p "Input your partition for 'boot' e.g. /dev/sda1 : " boot_partition;
 mount --mkdir $boot_partition /mnt/boot
 echo "Mount Boot Partition to /mnt/boot"
+sleep 1
 echo "============================================================================================================================"
 if [ "$swaptive" == true ]; then
     swapon $swap_partition
     echo "Activate swap - DONE"
 fi
+sleep 1
 echo "============================================================================================================================"
 pacstrap -K /mnt base linux linux-firmware git grub ntfs-3g bash-completion efibootmgr os-prober nano intel-ucode networkmanager base-devel man-db man-pages texinfo
+sleep 1
 echo "============================================================================================================================"
 genfstab -U /mnt >> /mnt/etc/fstab
+echo "Generate fstab - DONE"
+sleep 1
 echo "============================================================================================================================"
 chmod +x /root/zarch-minimal/*
 cp /root/zarch-minimal/zchroot /mnt
+echo "Copy 'zchroot' to /mnt"
+sleep 1
 echo "============================================================================================================================"
 echo "Now, you need to run this 'zchroot' file."
 echo "RUN THIS COMMAND : arch-chroot /mnt ./zchroot"

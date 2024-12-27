@@ -1,54 +1,51 @@
 #!/bin/bash
 fdisk -l
 echo "============================================================================================================================"
-echo "If you dual booted or still didn't format your entire disk, then the 'boot' partition should still be there"
-echo "If you don't have one, you can set it up in 'Windows' or use 'fdisk' (see google for the setup)"
-while true; do
-read -p "Do you have 'boot' partition? [y/n] " setiup2
-case $setiup2 in
-    [yY] ) read -p "Input your partition for 'boot' e.g. /dev/sda1 : " boot_partition;
-            break;;
-    [nN] ) echo "Then you must set it first, Bye!";
-            echo;
-            sleep 2;
-            exit;;
-    * ) echo "Invalid response. Only 'y/n' are accepted";
-            echo;;
-esac
-done
+read -p "Input your partition for 'boot' e.g. /dev/sda1 : " boot_partition;
+sleep 1
 echo "============================================================================================================================"
 ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 hwclock --systohc
 echo "Set Timezone in chroot - DONE"
+sleep 1
 echo "============================================================================================================================"
 echo en_US.UTF-8 UTF-8 >> /etc/locale.gen
 locale-gen
 echo LANG=en_US.UTF-8 >> /etc/locale.conf
+sleep 1
 echo "============================================================================================================================"
 read -p "Set your hostname : " honame
 echo $honame >> /etc/hostname
+sleep 1
 echo "============================================================================================================================"
 mkinitcpio -P
+sleep 1
 echo "============================================================================================================================"
 echo "Set your password for 'root'"
 passwd
+sleep 1
 echo "============================================================================================================================"
 grub-install --target=x86_64-efi --efi-directory=$boot_partition --bootloader-id=ArchLinux
 echo GRUB_DISABLE_OS_PROBER=false >> /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
+sleep 1
 echo "============================================================================================================================"
 echo "Input your username, this required for login after installation"
 read -p "Input your username : " uername
+sleep 1
 echo "============================================================================================================================"
 useradd -m $uername
 usermod -aG wheel $uername
 groups $uername
+sleep 1
 echo "============================================================================================================================"
 echo "Enter your password for new user"
 passwd $uername
+sleep 1
 echo "============================================================================================================================"
 echo "%wheel      ALL=(ALL:ALL) ALL" >> /etc/sudoers
 systemctl enable NetworkManager
+sleep 1
 echo "============================================================================================================================"
 echo "Installation DONE"
 echo "Reboot your device and detach liveiso usb"
