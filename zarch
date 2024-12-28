@@ -1,12 +1,28 @@
+echo "============================================================================================================================"
+echo "Updating System"
 sudo pacman -Syyu
+echo "============================================================================================================================"
+echo "Installing 'yay'"
 git clone https://aur.archlinux.org/yay
 cd yay
 makepkg -si
 cd ~
 rm -rf yay
 yay
+echo "============================================================================================================================"
+echo "Installing Packages "
 yay -S informant pacman-contrib mlocate archlinux-contrib jq ancient-packages rebuild-detector paccache-hook reflector xfce4 xfce4-goodies sddm
+echo "============================================================================================================================"
+echo "Add user to 'informant' group"
 sudo usermod -aG informant $USER
+echo "============================================================================================================================"
+echo "Enable 'paccache.timer'"
 sudo systemctl enable paccache.timer
 sudo systemctl start paccache.timer
+echo "============================================================================================================================"
+echo "Enable SDDM"
 sudo systemctl enable sddm
+echo "============================================================================================================================"
+echo "DONE"
+echo "============================================================================================================================"
+exit
