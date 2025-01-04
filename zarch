@@ -11,7 +11,7 @@ rm -rf yay
 yay
 echo "============================================================================================================================"
 echo "Installing Packages "
-yay -S informant pacman-contrib mlocate archlinux-contrib jq ancient-packages rebuild-detector paccache-hook reflector xfce4 xfce4-goodies sddm
+yay -S informant pacman-contrib mlocate archlinux-contrib jq ancient-packages rebuild-detector paccache-hook reflector plasma sddm
 echo "============================================================================================================================"
 echo "Add user to 'informant' group"
 sudo usermod -aG informant $USER
